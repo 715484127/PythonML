@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 #读取数据
 pd.set_option('display.max_columns', None) #显示所有数据
@@ -54,3 +55,12 @@ mse = test_df['squared_error'].mean()
 rmse = mse ** (1/2)
 print(rmse)
 print("=======================================")
+
+#数据预处理
+dc_listings = dc_listings.dropna()
+print(dc_listings[features])
+transformer = StandardScaler().fit(dc_listings[features])
+dc_listings[features] = transformer.transform(dc_listings[features])
+normalized_listing = dc_listings
+print(dc_listings.shape)
+print(normalized_listing.head())
