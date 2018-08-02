@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import sklearn.preprocessing as prep
 
 pd.set_option('display.max_columns', None)  # 显示所有数据
 filename = 'listings.csv'
@@ -17,6 +18,9 @@ features = [
 listing_data = pd.read_csv(filename)
 # 截取需要的列
 listing_data = listing_data[features]
+# 数据类型转换
+listing_data['price'] = listing_data.price.str.replace(
+    "\$|,", '').astype(float)
 # 查看数据集的行数和列数
 print("数据集维度:")
 print(listing_data.shape)
@@ -66,3 +70,26 @@ plt.show()
 # 散点矩阵图
 pd.plotting.scatter_matrix(listing_data)
 plt.show()
+
+
+# 数据预处理
+# 调整数据尺度
+scaler = prep.MinMaxScaler()
+# 查看变量类型
+print(type(listing_data))
+# 将Pandas的DataFrame转成numpy的array类型
+listing_data_array = listing_data.values
+# 检查数据集中是否有缺失的数据值 True-有缺失 False-无缺失
+print(np.isnan(listing_data_array).any())
+# 删除缺失项
+listing_data.dropna(inplace=True)
+listing_data_array = listing_data.values
+print(listing_data.shape)
+print(scaler.fit(listing_data_array))
+print(scaler.data_max_)
+print(scaler.data_min_)
+# 保留3位小数
+np.set_printoptions(precision=3)
+# 不使用科学计数法
+np.set_printoptions(suppress=True)
+print(scaler.transform(listing_data_array))
